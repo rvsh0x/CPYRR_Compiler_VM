@@ -47,7 +47,7 @@ La machine virtuelle charge les fichiers TI et exécute le programme sur une pil
 ## Prérequis
 
 - **GCC** : Compilateur C (gcc)
-- **Flex** : Générateur d'analyseurs lexicaux (lex)
+- **Lex** : Générateur d'analyseurs lexicaux (lex)
 - **Yacc/Bison** : Générateur d'analyseurs syntaxiques (yacc)
 - **Make** : Outil de construction
 - **Système d'exploitation** : Linux, macOS ou Unix-like
