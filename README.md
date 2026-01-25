@@ -48,7 +48,7 @@ La machine virtuelle charge les fichiers TI et exécute le programme sur une pil
 
 - **GCC** : Compilateur C (gcc)
 - **Lex** : Générateur d'analyseurs lexicaux (lex)
-- **Yacc/Bison** : Générateur d'analyseurs syntaxiques (yacc)
+- **Yacc** : Générateur d'analyseurs syntaxiques (yacc)
 - **Make** : Outil de construction
 - **Système d'exploitation** : Linux, macOS ou Unix-like
 
@@ -59,16 +59,19 @@ La machine virtuelle charge les fichiers TI et exécute le programme sur une pil
 sudo apt-get update
 sudo apt-get install build-essential flex bison
 ```
+*Note : Sur Debian/Ubuntu, le paquet `flex` fournit la commande `lex` et `bison` fournit `yacc`*
 
 **Sur macOS :**
 ```bash
 brew install flex bison
 ```
+*Note : Sur macOS, `flex` fournit `lex` et `bison` fournit `yacc`*
 
 **Sur Fedora/RHEL :**
 ```bash
 sudo dnf install gcc make flex bison
 ```
+*Note : Sur Fedora/RHEL, `flex` fournit `lex` et `bison` fournit `yacc`*
 
 ## Installation
 
@@ -150,7 +153,7 @@ CPYRR_Compiler_VM/
 │   ├── main.c                 # Point d'entrée compilateur
 │   ├── main_vm.c              # Point d'entrée machine virtuelle
 │   ├── analyseur_lexical/
-│   │   └── lexer.l            # Grammaire lexicale (Flex)
+│   │   └── lexer.l            # Grammaire lexicale (Lex)
 │   ├── analyseur_syntaxique/
 │   │   └── parser.y           # Grammaire syntaxique (Yacc)
 │   ├── semantique/            # Analyse sémantique
@@ -318,25 +321,31 @@ end
 
 ### Gestion des erreurs
 
-Le compilateur détecte et signale :
-- Erreurs lexicales
-- Erreurs syntaxiques
-- Erreurs sémantiques (types, déclarations, portées)
-- Warnings (variables non utilisées, etc.)
+Le compilateur dispose d'un système complet de gestion d'erreurs qui détecte et signale :
+- **Erreurs lexicales** : Caractères invalides, lexèmes non reconnus
+- **Erreurs syntaxiques** : Violations de la grammaire, tokens inattendus
+- **Erreurs sémantiques** : Types incompatibles, variables non déclarées, violations de règles sémantiques
+- **Warnings** : Avertissements non bloquants (variables non utilisées, etc.)
+- **Erreurs d'exécution** : Erreurs détectées lors de l'exécution par la machine virtuelle
 
-Les erreurs sont affichées avec :
-- Numéro de ligne et colonne
-- Contexte du code source
-- Message d'erreur détaillé
+Les erreurs sont affichées avec un contexte riche :
+- **En-tête formaté** : `fichier:ligne:colonne: type: message`
+- **Ligne source** : Affichage de la ligne complète avec numérotation
+- **Indicateurs visuels** : Caractères `^` et `~` en couleur pointant l'erreur
+- **Note explicative** : Suggestion de correction ou explication supplémentaire
+
+Le système distingue les erreurs bloquantes (empêchent la génération de code TI) des warnings (compilation continue).
 
 ### Machine virtuelle
 
 La VM implémente :
-- Pile d'exécution avec zones par région
-- Évaluation d'expressions
-- Exécution d'instructions
-- Gestion des appels de fonctions/procédures
-- Accès aux variables (simples, tableaux, structures)
+- **Pile d'exécution** : Zones d'activation avec chaînage statique pour accès aux variables parentes
+- **Chargeurs** : Parsing des fichiers TI avec analyseurs Lex/Yacc dédiés
+- **Évaluation d'expressions** : Arithmétiques, booléennes, comparaisons
+- **Exécution d'instructions** : Affectation, conditionnelles, boucles, appels, entrée/sortie
+- **Gestion des appels** : Empilement/dépilement de zones avec gestion du chaînage statique selon l'évolution du NIS
+- **Accès aux variables** : Simples, tableaux multidimensionnels, structures avec calcul d'adresse
+- **Gestion d'erreurs runtime** : Détection et signalement d'erreurs d'exécution
 
 ## Licence
 
